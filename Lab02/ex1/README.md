@@ -11,7 +11,7 @@ gcc -E main.c -o main.i
 ```
 
 
-## 2. Preprocessing
+## 2. Compilation
 
 
 After preprocessing, the next stage is compilation. In this stage, the preprocessed code is translated into assembly language code, which is specific to the target architecture. This assembly code is stored in a file with the extension `.asm` or `.s`.
