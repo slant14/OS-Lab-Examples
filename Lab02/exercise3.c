@@ -1,41 +1,46 @@
+#include <stdlib.h>
 #include <stdio.h>
-#include <ctype.h>
+#include <math.h>
 
-#define LEN 256
-
-int count(const char *str, char ch) {
-    int occurrences = 0;
-    while (*str) {
-        if (tolower(*str) == tolower(ch)) {
-            occurrences++;
+long long convertToDecimal(long long x, int s) {
+    long long result = 0;
+    int i = 0;
+    while (x > 0) {
+        int digit = x % 10;
+        if (digit >= s) {
+            puts("cannot convert!");
+            exit(0);
         }
-        str++;
+        result = result + digit * (int) pow(s, i);
+        x = x / 10;
+        i++;
     }
-    return occurrences;
+    return result;
 }
 
-void countAll(const char *str) {
-    int counted[256] = {0};  
-    while (*str) {
-        char lower_char = tolower(*str);
-        if (!counted[(unsigned char)lower_char]) {
-            int occurrences = count(str, *str);
-            printf("%c:%d\n", lower_char, occurrences);
-            counted[(unsigned char)lower_char] = 1;
-        }
-        str++;
+long long convertFromDecimal(long long x, int t) {
+    long long result = 0;
+    int i = 0;
+    while (x > 0) {
+        int digit = x % t;
+        result = result + (int) pow(10, i) * digit;
+        i++;
+        x = x / t;
     }
+    return result;
+}
+
+long long convert(long long x, int s, int t) {
+    if (s < 2 || s > 10 || t < 2 || t > 10) {
+        puts("cannot convert!");
+        exit(0);
+    }
+    return convertFromDecimal(convertToDecimal(x, s), t);
 }
 
 int main() {
-    char input[LEN];
-
-    printf("Enter a string: ");
-    scanf("%s", input);
-
-    printf("Count all (case-insensitive):\n");
-    countAll(input);
-
-    return 0;
+    long long n;
+    int s, t;
+    scanf("%ld %d %d", &n, &s, &t);
+    printf("%d\n", convert(n, s, t));
 }
-
