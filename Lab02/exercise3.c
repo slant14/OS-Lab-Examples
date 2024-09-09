@@ -1,23 +1,41 @@
 #include <stdio.h>
-#include <string.h>
+#include <ctype.h>
 
 #define LEN 256
 
-int main() {
-  char str[LEN], current;
-  int i = 0;
-
-  while ((current = getc(stdin)) && current != '.' && current != '\n') {
-    str[i] = current;
-    i++;
-  }
-
-  putc('\"', stdout);
-  for (; i >= 0; i--) {
-    putc(str[i], stdout);
-  }
-  putc('\"', stdout);
-  putc('\n', stdout);
-
-  return 0;
+int count(const char *str, char ch) {
+    int occurrences = 0;
+    while (*str) {
+        if (tolower(*str) == tolower(ch)) {
+            occurrences++;
+        }
+        str++;
+    }
+    return occurrences;
 }
+
+void countAll(const char *str) {
+    int counted[256] = {0};  
+    while (*str) {
+        char lower_char = tolower(*str);
+        if (!counted[(unsigned char)lower_char]) {
+            int occurrences = count(str, *str);
+            printf("%c:%d\n", lower_char, occurrences);
+            counted[(unsigned char)lower_char] = 1;
+        }
+        str++;
+    }
+}
+
+int main() {
+    char input[LEN];
+
+    printf("Enter a string: ");
+    scanf("%s", input);
+
+    printf("Count all (case-insensitive):\n");
+    countAll(input);
+
+    return 0;
+}
+
