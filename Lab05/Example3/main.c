@@ -19,12 +19,14 @@ int main() {
         return 1;
     }
 
+    pthread_join(thread1, NULL);
+    
     if (pthread_create(&thread2, NULL, increment_counter, NULL)) {
         fprintf(stderr, "Error creating thread 2\n");
         return 1;
     }
 
-    pthread_join(thread1, NULL);
+    
     pthread_join(thread2, NULL);
 
     printf("Final counter value: %d\n", counter);
