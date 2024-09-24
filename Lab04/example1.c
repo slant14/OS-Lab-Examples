@@ -1,45 +1,40 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <signal.h>
+#include <unistd.h>    // for fork() and getpid()
+#include <stdlib.h>    // for exit()
+#include <sys/types.h> // for pid_t
+#include <signal.h>    // for kill()
 
-#define n 4
+int main()
+{
+    int n = 4; // Declare variable n
 
-void print_message() {
-    pid_t pid = getpid();
-    printf("Hello from [PID - %d - <%d>]\n", pid, n);
-}
+    pid_t pid = fork(); // Create a new process using fork
 
-int main() {
-    pid_t pid = fork();
+    if (pid < 0)
+    {
+        // Fork failed
+        perror("Fork failed");
+        exit(1);
+    }
+    else if (pid == 0)
+    {
+        // This is the child process
+        printf("Hello from [%d - %d - %p] (Child)\n", getpid(), n, (void *)&n);
 
-    if (pid < 0) {
-        printf("Fork failed!\n");
-        return 1;
-    } else if (pid == 0) {
-        print_message();
-        printf("Child process: Going to sleep...\n");
-        sleep(10);  
-        printf("Child process: Woke up and exiting with error code 1\n");
-        exit(1); 
-    } else {
-        print_message();
-        printf("Parent process: Waiting for 5 seconds before killing the child...\n");
-        sleep(5);
+        // Error exit for child
+        exit(1);
+    }
+    else
+    {
+        // This is the parent process
+        printf("Hello from [%d - %d - %p] (Parent)\n", getpid(), n, (void *)&n);
 
-        printf("Parent process: Killing the child process...\n");
-        kill(pid, SIGKILL);
+        // Optionally, the parent can kill the child process
+        // Uncomment the following lines to terminate the child process
+        // kill(pid, SIGKILL);
 
-        int status;
-        wait(&status);
-
-        if (WIFSIGNALED(status)) {
-            printf("Child was killed by signal: %d\n", WTERMSIG(status));
-        }
-
-        printf("Parent process: Exiting normally\n");
-        exit(0);  
+        // Normal exit for parent
+        exit(0);
     }
 
     return 0;
